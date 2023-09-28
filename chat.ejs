@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Chat en Tiempo Real</title>
+</head>
+<body>
+    <h1>Sala de Chat </h1>
+   <p id="usuario"> <%= vtiempo%><p>
+  
+    <p>Usuarios Conectados: <span id="users">0</span></p>
+     <span id="datetime"></span>
+
+    <div id="chat">
+        <div id="messages"></div>
+        <input type="text" id="message" placeholder="Escribe un mensaje...">
+        <button id="send">Enviar</button>
+    
+    </div>
+<form action="/" >
+    <button>Atras</button>
+  </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        function updateDateTime() {
+        // create a new `Date` object
+        const now = new Date();
+
+        // get the current date and time as a string
+        const currentDateTime = now.toLocaleString();
+
+        // update the `textContent` property of the `span` element with the `id` of `datetime`
+     document.querySelector('#datetime').textContent = currentDateTime;
+      }
+ setInterval(updateDateTime, 1000);
+
+
+        const socket = io();
+        // Manejar el evento del servidor para mostrar el número de usuarios conectados
+        socket.on('update-users', (count) => {
+            const usersElement = document.getElementById('users');
+
+            usersElement.textContent = count.toString();
+                });
+
+
+        // Manejar mensajes de chat
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+        const messagesElement = document.getElementById('messages');
+        const usuario =  document.getElementById('usuario').innerHTML;
+         const currentDateTime =  document.getElementById('datetime');
+   
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+            if (message) {
+                // Enviar el mensaje al servidor
+                socket.emit('chat-message',   " " + usuario+": " + message + " "+ currentDateTime.textContent );
+                messageInput.value = '';
+            }
+        });
+
+        // Mostrar mensajes en el chat
+        socket.on('message', (message) => {
+
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+
+            messagesElement.appendChild(messageElement);
+        });
+
+
+    </script>
+</body>
+</html>
