@@ -16,9 +16,10 @@
         <div id="messages"></div>
         <input type="text" id="message" placeholder="Escribe un mensaje...">
         <button id="send">Enviar</button>
-    
+  
     </div>
 <form action="/" >
+
     <button>Atras</button>
   </form>
     <script src="/socket.io/socket.io.js"></script>
@@ -35,7 +36,7 @@
      document.querySelector('#datetime').textContent = currentDateTime;
       }
  setInterval(updateDateTime, 1000);
-
+  
 
         const socket = io();
         // Manejar el evento del servidor para mostrar el número de usuarios conectados
@@ -52,7 +53,12 @@
         const messagesElement = document.getElementById('messages');
         const usuario =  document.getElementById('usuario').innerHTML;
          const currentDateTime =  document.getElementById('datetime');
-   
+        const btn  = document.createElement('button');
+        btn.innerText = 'Borrar';
+        btn.onclick = function(){
+document.querySelector(".mesaj").remove();
+  
+  };
         sendButton.addEventListener('click', () => {
             const message = messageInput.value.trim();
             if (message) {
@@ -66,9 +72,12 @@
         socket.on('message', (message) => {
 
             const messageElement = document.createElement('div');
-            messageElement.textContent = message;
+            messageElement.style = ('background-color:teal'); 
 
-            messagesElement.appendChild(messageElement);
+            messageElement.className = "mesaj"
+            messageElement.textContent = message;
+       messagesElement.appendChild(messageElement);
+     messageElement.appendChild(btn)
         });
 
 
